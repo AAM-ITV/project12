@@ -13,8 +13,11 @@ WORKDIR /app
 # Собираем проект Maven
 RUN mvn package
 
-# Копируем .war файл в директорию веб-приложений Tomcat
-RUN cp target/*.war /usr/local/tomcat/webapps/
+# Переименовываем .war файл
+RUN mv target/*.war /app/myapp.war
+
+# Копируем переименованный .war файл в директорию веб-приложений Tomcat
+RUN cp /app/myapp.war /usr/local/tomcat/webapps/
 
 # Открываем порт 8080 для доступа к приложению
 EXPOSE 8080
