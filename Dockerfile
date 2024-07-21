@@ -2,7 +2,7 @@ FROM tomcat:9-jdk11-openjdk-slim
 
 
 RUN apt-get update && apt-get install -y git maven
-RUN git clone https://github.com/AAM-ITV/project12.git
+RUN git clone https://github.com/AAM-ITV/project12.git /usr/local/tomcat/webapps/hello
 WORKDIR /usr/local/tomcat/webapps/hello
 
 RUN mvn package
