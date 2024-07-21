@@ -6,7 +6,6 @@ services:
     context: .
     dockerfile: Dockerfile
     volumes:
-          - /home/user/DZ12:/usr/local/tomcat/webapps/
           -'./WebContent:/usr/local/tomcat/webapps/'
     ports:
       - "8080:8080"
