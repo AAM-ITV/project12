@@ -13,7 +13,7 @@ WORKDIR /usr/local/tomcat/webapps/hello
 # Собираем проект Maven
 RUN mvn package
 # Переименовываем .war файл
-RUN mv target/App42PaaS-Java-MySQL-Sample-0.0.1-SNAPSHOT.war apply.war
+RUN mv target/*.war apply.war
 
 # Копируем переименованный .war файл в директорию веб-приложений Tomcat
 RUN cp /usr/local/tomcat/webapps/hello/project12/apply.war /usr/local/tomcat/webapps
