@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y git maven
 RUN git clone https://github.com/AAM-ITV/project12.git /usr/local/tomcat/webapps/hello
 
 # Устанавливаем рабочую директорию
-WORKDIR /usr/local/tomcat/webapps/hello/project12
+WORKDIR /usr/local/tomcat/webapps/hello
 
 # Собираем проект Maven
 RUN mvn package
