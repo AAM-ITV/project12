@@ -3,8 +3,10 @@ FROM tomcat:9-jdk11-openjdk-slim
 
 RUN apt-get update && apt-get install -y git maven
 
-WORKDIR /home/user/project12
+WORKDIR /app
 
+COPY pom.xml .
+COPY src /app/src
 
 RUN mvn package
 
