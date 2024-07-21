@@ -1,15 +1,15 @@
-FROM tomcat:9-jdk11-openjdk-slim
 
+FROM maven:3.6.3-openjdk-11 as builder
 
-RUN apt-get update && apt-get install -y git maven
-RUN git clone https://github.com/AAM-ITV/project12.git
-WORKDIR /usr/local/tomcat/webapps/hello
+WORKDIR /app
+
+COPY pom.xml .
+COPY src ./src
 
 RUN mvn package
 
+FROM tomcat:9-jdk11-openjdk
 
-RUN cp target/*.war /usr/local/tomcat/webapps/
-
-
+COPY --from=builder /app/target/App42PaaS-Java-MySQL-Sample.war /usr/local/tomcat/webapps/
 
 EXPOSE 8080
