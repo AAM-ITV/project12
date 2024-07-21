@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   buildapp:
-    context: .
+    #context: .
     dockerfile: Dockerfile
     volumes:
       - './WebContent:/usr/local/tomcat/webapps'
