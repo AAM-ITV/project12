@@ -19,8 +19,6 @@ RUN ls -la target
 # Переименовываем .war файл (если необходимо) и копируем в директорию Tomcat
 RUN mv target/*.war /usr/local/tomcat/webapps/hello-app.war
 
-# Копируем файл в директорию веб-приложений Tomcat
-RUN cp /usr/local/tomcat/webapps/hello-app.war /usr/local/tomcat/webapps/
 
 # Открываем порт 8080
 EXPOSE 8080
