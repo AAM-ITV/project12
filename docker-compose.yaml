@@ -4,8 +4,7 @@ services:
   buildapp:
     #context: .
     dockerfile: Dockerfile
-    volumes:
-      - war_file:/usr/local/tomcat/webapps'
+   
     ports:
       - "8080:8080"
     environment:
@@ -29,4 +28,4 @@ services:
 
 volumes:
   db_data:
-  war_file:
+
