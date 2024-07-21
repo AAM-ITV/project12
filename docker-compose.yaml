@@ -19,7 +19,7 @@ services:
       - db
   db:
     image: mysql:5.7
-    environment:
+    envinronment:
       - MYSQL_ROOT_PASSWORD: password
       - MYSQL_DATABASE: app_db
     ports:
