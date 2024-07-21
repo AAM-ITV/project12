@@ -5,7 +5,7 @@ FROM tomcat:9-jdk11-openjdk-slim
 RUN apt-get update && apt-get install -y git maven
 
 # Клонируем репозиторий и копируем его содержимое в рабочую директорию
-RUN git clone https://github.com/AAM-ITV/project12.git WORKDIR /usr/local/tomcat/webapps/hello
+RUN git clone https://github.com/AAM-ITV/project12.git /usr/local/tomcat/webapps/hello
 
 # Устанавливаем рабочую директорию
 WORKDIR /usr/local/tomcat/webapps/hello/project12
