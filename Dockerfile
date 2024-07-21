@@ -17,7 +17,7 @@ RUN mvn package
 RUN mv target/*.war /app/myapp.war
 
 # Копируем переименованный .war файл в директорию веб-приложений Tomcat
-RUN cp /app/myapp.war /usr/local/tomcat/webapps/
+RUN cp /app/myapp.war /usr/local/tomcat/webapps
 
 # Открываем порт 8080 для доступа к приложению
 EXPOSE 8080
