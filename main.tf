@@ -5,6 +5,7 @@ terraform {
       version = "~> 0.88"
     }
   }
+  required_version = ">= 1.7.0"
 }
 provider "yandex" {
   token     = "y0_AgAAAAAGKyuaAATuwQAAAAEL6APzAABFyWvjhZVO46RIP6-7enyK-JzXvg"
