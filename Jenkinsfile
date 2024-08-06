@@ -15,6 +15,18 @@ pipeline {
                 git 'https://github.com/AAM-ITV/project12.git'
             }
         }
+           
+        stage('Check Terraform Version') {
+            agent { label 'master' }
+            tools {
+                terraform "${env.TERRAFORM_VERSION}"
+            }
+            steps {
+                script {
+                    sh 'terraform --version'
+                }
+            }
+        }
 
         stage('Terraform Init & Apply') {
             agent { label 'master' }
