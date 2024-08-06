@@ -1,0 +1,13 @@
+---
+- hosts: prod_node
+  tasks:
+    - name: Pull Docker image
+      docker_image:
+        name: "{{ docker_image }}"
+        source: pull
+
+    - name: Run Docker container
+      docker_compose:
+        project_src: /path/to/deploy/dir
+        state: present
+        restarted: true
