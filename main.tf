@@ -7,14 +7,14 @@ terraform {
   }
 }
 provider "yandex" {
-  token     = "AQVN3tmenATF2otok5iUzN88Dr9fFajUKgL-XZRX"
+  token     = "y0_AgAAAAAGKyuaAATuwQAAAAEL6APzAABFyWvjhZVO46RIP6-7enyK-JzXvg"
   cloud_id  = "b1gpl53sdobvpahkcboc"
   folder_id = "b1ge0llpg1gnn3hpv1n4"
   zone      = "ru-central1-d"
 }
 resource "yandex_compute_instance" "build_node" {
   name        = "build-node"
-  platform_id = "standard-v1"
+  platform_id = "standard-v3"
   resources {
     cores  = 4
     memory = 4
@@ -27,7 +27,7 @@ resource "yandex_compute_instance" "build_node" {
     }
   }
   network_interface {
-    subnet_id = "e9bbqtbbo4evg3kk5esc"
+    subnet_id = "fl8h2bv6lfj7hqei7bf5"
     nat       = true
   }
 
@@ -38,7 +38,7 @@ resource "yandex_compute_instance" "build_node" {
 
 resource "yandex_compute_instance" "prod_node" {
   name        = "prod-node"
-  platform_id = "standard-v1"
+  platform_id = "standard-v3"
   resources {
     cores  = 4
     memory = 4
@@ -51,13 +51,13 @@ resource "yandex_compute_instance" "prod_node" {
     }
   }
   network_interface {
-    subnet_id = "e9bbqtbbo4evg3kk5esc"
+    subnet_id = "fl8h2bv6lfj7hqei7bf5"
     nat       = true
   }
 
   metadata = {
     ssh-keys = "ubuntu:${file("~/.ssh/id_rsa.pub")}"
-  }  
+  }
  }
 
-  
+
