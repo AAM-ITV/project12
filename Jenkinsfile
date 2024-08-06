@@ -119,7 +119,7 @@ pipeline {
         }
 
         stage('Deploy to Prod Node') {
-            agent { label 'master' } // Настройка продовой ноды выполняется на Jenkins Master
+            agent { label 'master' } // Развертывание на продовой ноде выполняется на Jenkins Master
             steps {
                 script {
                     dir('ansible') {
@@ -129,10 +129,10 @@ pipeline {
             }
         }
     }
+
     post {
         always {
             cleanWs() // Очистка рабочего пространства после выполнения пайплайна
         }
     }
 }
-
