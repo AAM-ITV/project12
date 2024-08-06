@@ -7,9 +7,9 @@ terraform {
   }
 }
 provider "yandex" {
-  token     = var.yc_token
-  cloud_id  = var.yc_cloud_id
-  folder_id = var.yc_folder_id
+  token     = "t1.9euelZqdyMiNl82WyY2UkIyZnpnHi-3rnpWalpbKmYnLypfImc-SlZCOy8rl8_cqMGFK-e8IA0kH_d3z92peXkr57wgDSQf9zef1656Vms6Pj5XGx4nKmpiOip2eyZHP7_zN5_XrnpWazIzKyZeaksaYjZialpyeiZXv_cXrnpWazo-PlcbHicqamI6KnZ7Jkc8.zho5GfdtNUCOUL6N2QcOGqO0N6CSzNGIRFJuOsxEoKmL_MwP5aBoUiJLRi7HyMdVDeVFf1xqXfXFFmpmYzuwDw"
+  cloud_id  = "aje3s56hem9grgeicavj"
+  folder_id = "b1ge0llpg1gnn3hpv1n4"
   zone      = "ru-central1-a"
 }
 resource "yandex_compute_instance" "build_node" {
