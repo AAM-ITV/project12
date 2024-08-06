@@ -12,8 +12,8 @@ provider "yandex" {
   folder_id = var.yc_folder_id
   zone      = "ru-central1-a"
 }
-resource "yandex_compute_instance" "builder_instance" {
-  name        = "terraform-instance"
+resource "yandex_compute_instance" "build_node" {
+  name        = "build-node"
   platform_id = "standard-v1"
   resources {
     cores  = 4
@@ -32,30 +32,12 @@ resource "yandex_compute_instance" "builder_instance" {
   }
 
   metadata = {
-    ssh-keys = "ubuntu:${file("~/.ssh/id_rsa.pub")}"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt-get update",
-      "sudo apt-get install -y openjdk-11-jdk maven git",
-      "git clone https://github.com/boxfuse/boxfuse-sample-java-war-hello.git",
-      "cd boxfuse-sample-java-war-hello",
-      "mvn package",
-       "scp -i ~/.ssh/id_rsa target/hello-1.0.war ubuntu@${yandex_compute_instance.production_instance.network_interface.0.nat_ip_address}:/home/ubuntu/hello-1.0.war"
-    ]
-
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      private_key = file("~/.ssh/id_rsa")
-      host        = self.network_interface.0.nat_ip_address
-    }
+    ssh-keys = "user:${file("~/.ssh/id_rsa.pub")}"
   }
 }
 
-resource "yandex_compute_instance" "production_instance" {
-  name        = "production-instance"
+resource "yandex_compute_instance" "prod_node" {
+  name        = "prod-node"
   platform_id = "standard-v1"
   resources {
     cores  = 4
@@ -80,21 +62,7 @@ resource "yandex_compute_instance" "production_instance" {
   provisioner "file" {
     source      = "/path/to/hello-1.0.war"  # Локальный путь
     destination = "/home/ubuntu/hello-1.0.war"
-}
-  provisioner "remote-exec" {
-   inline = [
-      "sudo apt-get update",
-      "sudo apt-get install -y openjdk-11-jdk tomcat9",
-      "sudo systemctl start tomcat9",
-      "sudo systemctl enable tomcat9",
-      "sudo mv /home/ubuntu/hello-1.0.war /var/lib/tomcat9/webapps/hello.war"
-    ]
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      private_key = file("~/.ssh/id_rsa")
-      host        = self.network_interface.0.nat_ip_address
-   }
- } 
-}
+  }  
+ }
+
   
