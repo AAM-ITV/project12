@@ -57,11 +57,6 @@ resource "yandex_compute_instance" "prod_node" {
 
   metadata = {
     ssh-keys = "ubuntu:${file("~/.ssh/id_rsa.pub")}"
-  }
-
-  provisioner "file" {
-    source      = "/path/to/hello-1.0.war"  # Локальный путь
-    destination = "/home/ubuntu/hello-1.0.war"
   }  
  }
 
