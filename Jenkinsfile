@@ -16,7 +16,10 @@ pipeline {
         }
 
         stage('Terraform Init & Apply') {
-            agent { label 'master' } // Указываем, что этот шаг выполняется на Jenkins Master
+            agent { label 'master' }
+            tools {
+                terraform "${env.TERRAFORM_VERSION}"
+            }
             steps {
                 script {
                     dir('terraform') {
