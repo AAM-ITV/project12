@@ -46,8 +46,8 @@ pipeline {
             agent { label 'master' } // Указываем, что этот шаг выполняется на Jenkins Master
             steps {
                 script {
-                    def buildNodeIp = sh(script: 'cd terraform && terraform output -raw build_node_ip', returnStdout: true).trim()
-                    def prodNodeIp = sh(script: 'cd terraform && terraform output -raw prod_node_ip', returnStdout: true).trim()
+                    def buildNodeIp = sh(script: 'terraform output -raw build_node_ip', returnStdout: true).trim()
+                    def prodNodeIp = sh(script: 'terraform output -raw prod_node_ip', returnStdout: true).trim()
 
                     writeFile file: 'ansible/inventory', text: """
                     [build_node]
