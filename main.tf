@@ -62,11 +62,11 @@ resource "yandex_compute_instance" "build_node" {
   }
 
   metadata = {
-    ssh-keys = "user:${file("/var/lib/jenkins/.ssh/id_rsa.pub")}"
+    ssh-keys = "jenkins:${file("/var/lib/jenkins/.ssh/id_rsa.pub")}"
     user-data = <<-EOF
       #cloud-config
       users:
-        - name: user
+        - name: jenkins
           sudo: ALL=(ALL) NOPASSWD:ALL
           shell: /bin/bash
           ssh_authorized_keys:
@@ -99,11 +99,11 @@ resource "yandex_compute_instance" "prod_node" {
   }
 
   metadata = {
-    ssh-keys = "user:${file("/var/lib/jenkins/.ssh/id_rsa.pub")}"
+    ssh-keys = "jenkins:${file("/var/lib/jenkins/.ssh/id_rsa.pub")}"
     user-data = <<-EOF
       #cloud-config
       users:
-        - name: user
+        - name: jenkins
           sudo: ALL=(ALL) NOPASSWD:ALL
           shell: /bin/bash
           ssh_authorized_keys:
