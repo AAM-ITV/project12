@@ -42,20 +42,20 @@ pipeline {
                 }
             }
         }
-
+        
         stage('Generate Ansible Inventory') {
-            agent { label 'master' } // Указываем, что этот шаг выполняется на Jenkins Master
+            agent { label 'master' }
             steps {
                 script {
                     def buildNodeIp = sh(script: 'terraform output -raw build_node_ip', returnStdout: true).trim()
                     def prodNodeIp = sh(script: 'terraform output -raw prod_node_ip', returnStdout: true).trim()
 
                     writeFile file: 'inventory', text: """
-                    [build_node]
-                    ${buildNodeIp} ansible_user=jenkins ansible_ssh_private_key_file=${SSH_KEY_PATH}
+[build_node]
+${buildNodeIp} ansible_user=jenkins ansible_ssh_private_key_file=${SSH_KEY_PATH} ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 
-                    [prod_node]
-                    ${prodNodeIp} ansible_user=jenkins ansible_ssh_private_key_file=${SSH_KEY_PATH}
+[prod_node]
+${prodNodeIp} ansible_user=jenkins ansible_ssh_private_key_file=${SSH_KEY_PATH} ansible_ssh_common_args='-o StrictHostKeyChecking=no'
                     """
                 }
             }
