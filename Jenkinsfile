@@ -50,7 +50,7 @@ pipeline {
                     def buildNodeIp = sh(script: 'terraform output -raw build_node_ip', returnStdout: true).trim()
                     def prodNodeIp = sh(script: 'terraform output -raw prod_node_ip', returnStdout: true).trim()
 
-                    writeFile file: 'ansible/inventory', text: """
+                    writeFile file: 'inventory', text: """
                     [build_node]
                     build-node ansible_host=${buildNodeIp} ansible_user=jenkins ansible_ssh_private_key_file=${SSH_KEY_PATH}
 
