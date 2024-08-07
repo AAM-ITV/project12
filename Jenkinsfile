@@ -6,6 +6,7 @@ pipeline {
         DOCKER_CREDENTIALS_ID = 'docker-hub-credentials' // ID учетных данных в Jenkins
         SSH_KEY_PATH = '/var/jenkins_home/.ssh/id_rsa' // Путь к вашему приватному SSH ключу в контейнере Jenkins
         TERRAFORM_VERSION = 'Terraform' // Укажите имя, которое вы задали в настройках
+        ANSIBLE_VERSION = 'Ansible'
     }
 
     stages {
@@ -62,6 +63,9 @@ pipeline {
 
         stage('Setup Build Node') {
             agent { label 'master' } // Настройка билдовой ноды выполняется на Jenkins Master
+             tools {
+                ansible "${env.ANSIBLE_VERSION}"
+             }
             steps {
                 script {
                         sh 'ansible-playbook -i inventory ansible-build_node.yml --private-key=${SSH_KEY_PATH}'
@@ -122,6 +126,9 @@ pipeline {
 
         stage('Setup Prod Node') {
             agent { label 'master' } // Настройка продовой ноды выполняется на Jenkins Master
+            tools {
+                ansible "${env.ANSIBLE_VERSION}"
+             }
             steps {
                 script {
                         sh 'ansible-playbook -i inventory ansible-prod_node.yml --private-key=${SSH_KEY_PATH}'
@@ -132,6 +139,9 @@ pipeline {
 
         stage('Deploy to Prod Node') {
             agent { label 'master' } // Развертывание на продовой ноде выполняется на Jenkins Master
+            tools {
+                ansible "${env.ANSIBLE_VERSION}"
+             }
             steps {
                 script {
                         sh 'ansible-playbook -i inventory ansible-deploy.yml --private-key=${SSH_KEY_PATH}'
