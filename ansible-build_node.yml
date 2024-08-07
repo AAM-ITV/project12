@@ -1,6 +1,31 @@
 ---
 - hosts: build_node
+  become: yes
   tasks:
+    - name: Remove apt lock file (lists)
+      file:
+        path: /var/lib/apt/lists/lock
+        state: absent
+
+    - name: Remove apt lock file (archives)
+      file:
+        path: /var/cache/apt/archives/lock
+        state: absent
+
+    - name: Remove dpkg lock file
+      file:
+        path: /var/lib/dpkg/lock
+        state: absent
+
+    - name: Remove dpkg frontend lock file
+      file:
+        path: /var/lib/dpkg/lock-frontend
+        state: absent
+
+    - name: Configure dpkg
+      command: dpkg --configure -a
+      ignore_errors: yes
+
     - name: Install Docker
       apt:
         name: docker.io
@@ -15,7 +40,7 @@
 
     - name: Install Docker Compose
       get_url:
-        url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-`uname -s`-`uname -m`
+        url: "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-{{ ansible_system }}-{{ ansible_architecture }}"
         dest: /usr/local/bin/docker-compose
         mode: '0755'
       become: true
