@@ -1,13 +1,3 @@
-terraform {
-  required_providers {
-    yandex = {
-      source  = "yandex-cloud/yandex"
-      version = "~> 0.88"
-    }
-  }
-  required_version = ">= 1.7.0"
-}
-
 provider "yandex" {
   token     = "y0_AgAAAAAGKyuaAATuwQAAAAEL6APzAABFyWvjhZVO46RIP6-7enyK-JzXvg"
   cloud_id  = "b1gpl53sdobvpahkcboc"
@@ -33,8 +23,38 @@ resource "yandex_vpc_security_group" "default" {
   ingress {
     description    = "SSH"
     protocol       = "TCP"
-    port          = "22"
+    port           = "22"
     v4_cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    description    = "HTTP"
+    protocol       = "TCP"
+    port           = "80"
+    v4_cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    description    = "HTTPS"
+    protocol       = "TCP"
+    port           = "443"
+    v4_cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "yandex_vpc_nat_gateway" "nat" {
+  name     = "my-nat-gateway"
+  network_id = yandex_vpc_network.network-1.id
+  zone     = "ru-central1-d"
+}
+
+resource "yandex_vpc_route_table" "route_table" {
+  name     = "my-route-table"
+  network_id = yandex_vpc_network.network-1.id
+
+  route {
+    destination = "0.0.0.0/0"
+    gateway_id   = yandex_vpc_nat_gateway.nat.id
   }
 }
 
