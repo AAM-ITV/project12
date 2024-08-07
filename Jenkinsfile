@@ -52,10 +52,10 @@ pipeline {
 
                     writeFile file: 'inventory', text: """
                     [build_node]
-                    build-node ansible_host=${buildNodeIp} ansible_user=jenkins ansible_ssh_private_key_file=${SSH_KEY_PATH}
+                    ${buildNodeIp} ansible_user=jenkins ansible_ssh_private_key_file=${SSH_KEY_PATH}
 
                     [prod_node]
-                    prod-node ansible_host=${prodNodeIp} ansible_user=jenkins ansible_ssh_private_key_file=${SSH_KEY_PATH}
+                    ${prodNodeIp} ansible_user=jenkins ansible_ssh_private_key_file=${SSH_KEY_PATH}
                     """
                 }
             }
