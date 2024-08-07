@@ -77,3 +77,9 @@ resources {
       EOF
  }
 }
+output "build_node_ip" {
+  value = yandex_compute_instance.build_node.network_interface.0.nat_ip_address
+}
+output "prod_node_ip" {
+  value = yandex_compute_instance.prod_node.network_interface.0.nat_ip_address
+}
