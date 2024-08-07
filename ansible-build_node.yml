@@ -26,6 +26,16 @@
       command: dpkg --configure -a
       ignore_errors: yes
 
+    - name: Clean apt cache
+      command: apt-get clean
+      ignore_errors: yes
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      ignore_errors: yes
+
     - name: Install Docker
       apt:
         name: docker.io
