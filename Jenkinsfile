@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'aamitv/myapp:latest' // Ваш Docker Hub репозиторий
         DOCKER_CREDENTIALS_ID = 'docker-hub-credentials' // ID учетных данных в Jenkins
-        SSH_KEY_PATH = '/home/user/id_ed25519.pub"' // Путь к вашему приватному SSH ключу в контейнере Jenkins
+        SSH_KEY_PATH = '/var/lib/jenkins/.ssh/id_rsa.pub' // Путь к вашему приватному SSH ключу в контейнере Jenkins
         TERRAFORM_VERSION = 'Terraform' // Укажите имя, которое вы задали в настройках
         ANSIBLE_VERSION = 'Ansible'
     }
