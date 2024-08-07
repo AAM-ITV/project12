@@ -56,7 +56,7 @@ resource "yandex_compute_instance" "prod_node" {
     nat       = true
   }
 metadata = {
-  ssh-keys = "root:${file("/home/user/id_ed25519.pub")}"
+  ssh-keys = "user:${file("/home/user/id_ed25519.pub")}"
  }
 }
 output "build_node_ip" {
