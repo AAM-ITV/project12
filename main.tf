@@ -33,7 +33,7 @@ resource "yandex_compute_instance" "build_node" {
   }
 
 metadata = {
-  ssh-keys = "jenkins:${file("/var/lib/jenkins/.ssh/id_rsa.pub")}"
+  ssh-keys = "jenkins:${file("/var/lib/jenkins/.ssh/id_ed25519.pub")}"
  }
 }
 
@@ -56,10 +56,9 @@ resource "yandex_compute_instance" "prod_node" {
     nat       = true
   }
 metadata = {
-  ssh-keys = "jenkins:${file("/var/lib/jenkins/.ssh/id_rsa.pub")}"
+  ssh-keys = "jenkins:${file("/var/lib/jenkins/.ssh/id_ed25519.pub")}"
  }
 }
-
 output "build_node_ip" {
   value = yandex_compute_instance.build_node.network_interface.0.nat_ip_address
 }
