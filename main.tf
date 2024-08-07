@@ -32,9 +32,9 @@ resource "yandex_compute_instance" "build_node" {
     nat       = true
   }
 
-  metadata = {
-    ssh-keys = "root:${file("~/.ssh/id_rsa.pub")}"
-  }
+metadata = {
+  ssh-keys = "jenkins:${file("/var/lib/jenkins/.ssh/id_rsa.pub")}"
+ }
 }
 
 resource "yandex_compute_instance" "prod_node" {
@@ -55,10 +55,9 @@ resource "yandex_compute_instance" "prod_node" {
     subnet_id = "fl8h2bv6lfj7hqei7bf5"
     nat       = true
   }
-
-  metadata = {
-    ssh-keys = "root:${file("~/.ssh/id_rsa.pub")}"
-  }
+metadata = {
+  ssh-keys = "jenkins:${file("/var/lib/jenkins/.ssh/id_rsa.pub")}"
  }
+}
 
 
