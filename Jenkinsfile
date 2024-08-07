@@ -99,7 +99,7 @@ ${prodNodeIp} ansible_user=jenkins ansible_ssh_private_key_file=${SSH_KEY_PATH} 
             steps {
                 script {
                     def buildNodeIp = sh(script: 'terraform output -raw build_node_ip', returnStdout: true).trim()
-                    sh "ssh -i ${SSH_KEY_PATH} jenkins@${buildNodeIp} 'cd /home/jenkins/project/app && docker-compose build'"
+                    sh "ssh -i ${SSH_KEY_PATH} jenkins@${buildNodeIp} 'cd /home/jenkins/project && docker-compose build'"
                 }
             }
         }
