@@ -33,7 +33,7 @@ resource "yandex_compute_instance" "build_node" {
   }
 
 metadata = {
-  ssh-keys = "user:${file("/home/user/id_ed25519.pub")}"
+  ssh-keys = "user:${file("/var/lib/jenkins/.ssh/id_rsa.pub")}"
  }
 }
 
@@ -56,7 +56,7 @@ resource "yandex_compute_instance" "prod_node" {
     nat       = true
   }
 metadata = {
-  ssh-keys = "user:${file("/home/user/id_ed25519.pub")}"
+  ssh-keys = "user:${file("/var/lib/jenkins/.ssh/id_rsa.pub")}"
  }
 }
 output "build_node_ip" {
