@@ -2,27 +2,17 @@
 - hosts: build_node
   become: yes
   tasks:
-    - name: Remove apt lock file (lists)
+    - name: Remove apt lock files
       file:
-        path: /var/lib/apt/lists/lock
+        path: "{{ item }}"
         state: absent
+      with_items:
+        - /var/lib/apt/lists/lock
+        - /var/cache/apt/archives/lock
+        - /var/lib/dpkg/lock
+        - /var/lib/dpkg/lock-frontend
 
-    - name: Remove apt lock file (archives)
-      file:
-        path: /var/cache/apt/archives/lock
-        state: absent
-
-    - name: Remove dpkg lock file
-      file:
-        path: /var/lib/dpkg/lock
-        state: absent
-
-    - name: Remove dpkg frontend lock file
-      file:
-        path: /var/lib/dpkg/lock-frontend
-        state: absent
-
-    - name: Configure dpkg
+    - name: Reconfigure dpkg
       command: dpkg --configure -a
       ignore_errors: yes
 
@@ -30,11 +20,15 @@
       command: apt-get clean
       ignore_errors: yes
 
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-        cache_valid_time: 3600
+    - name: Check if apt-get update fails
+      command: apt-get update
+      register: apt_update
       ignore_errors: yes
+
+    - name: Print apt-get update output
+      debug:
+        msg: "{{ apt_update.stdout }}"
+      when: apt_update.failed
 
     - name: Install Docker
       apt:
