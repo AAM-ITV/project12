@@ -64,9 +64,7 @@ pipeline {
             agent { label 'master' } // Настройка билдовой ноды выполняется на Jenkins Master
             steps {
                 script {
-                    dir('ansible') {
                         sh 'ansible-playbook -i inventory ansible-build_node.yml --private-key=${SSH_KEY_PATH}'
-                    }
                 }
             }
         }
@@ -75,7 +73,7 @@ pipeline {
             agent { label 'master' } // Создание директорий на билдовой ноде выполняется на Jenkins Master
             steps {
                 script {
-                    def buildNodeIp = sh(script: 'cd terraform && terraform output -raw build_node_ip', returnStdout: true).trim()
+                    def buildNodeIp = sh(script: 'terraform output -raw build_node_ip', returnStdout: true).trim()
                     sh """
                     ssh -i ${SSH_KEY_PATH} jenkins@${buildNodeIp} 'mkdir -p /home/jenkins/project/app'
                     """
@@ -87,7 +85,7 @@ pipeline {
             agent { label 'master' } // Копирование файлов выполняется на Jenkins Master
             steps {
                 script {
-                    def buildNodeIp = sh(script: 'cd terraform && terraform output -raw build_node_ip', returnStdout: true).trim()
+                    def buildNodeIp = sh(script: 'terraform output -raw build_node_ip', returnStdout: true).trim()
                     sh "scp -i ${SSH_KEY_PATH} -r ${WORKSPACE}/* jenkins@${buildNodeIp}:/home/jenkins/project"
                 }
             }
@@ -96,7 +94,7 @@ pipeline {
         stage('Build Docker Image on Build Node') {
             steps {
                 script {
-                    def buildNodeIp = sh(script: 'cd terraform && terraform output -raw build_node_ip', returnStdout: true).trim()
+                    def buildNodeIp = sh(script: 'terraform output -raw build_node_ip', returnStdout: true).trim()
                     sh "ssh -i ${SSH_KEY_PATH} jenkins@${buildNodeIp} 'cd /home/jenkins/project/app && docker-compose build'"
                 }
             }
@@ -105,7 +103,7 @@ pipeline {
         stage('Login to Docker Hub') {
             steps {
                 script {
-                    def buildNodeIp = sh(script: 'cd terraform && terraform output -raw build_node_ip', returnStdout: true).trim()
+                    def buildNodeIp = sh(script: 'terraform output -raw build_node_ip', returnStdout: true).trim()
                     withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sh "ssh -i ${SSH_KEY_PATH} jenkins@${buildNodeIp} 'echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin'"
                     }
@@ -116,7 +114,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    def buildNodeIp = sh(script: 'cd terraform && terraform output -raw build_node_ip', returnStdout: true).trim()
+                    def buildNodeIp = sh(script: 'terraform output -raw build_node_ip', returnStdout: true).trim()
                     sh "ssh -i ${SSH_KEY_PATH} jenkins@${buildNodeIp} 'docker tag myapp ${DOCKER_IMAGE} && docker push ${DOCKER_IMAGE}'"
                 }
             }
@@ -126,9 +124,8 @@ pipeline {
             agent { label 'master' } // Настройка продовой ноды выполняется на Jenkins Master
             steps {
                 script {
-                    dir('ansible') {
                         sh 'ansible-playbook -i inventory ansible-prod_node.yml --private-key=${SSH_KEY_PATH}'
-                    }
+                    
                 }
             }
         }
@@ -137,9 +134,8 @@ pipeline {
             agent { label 'master' } // Развертывание на продовой ноде выполняется на Jenkins Master
             steps {
                 script {
-                    dir('ansible') {
                         sh 'ansible-playbook -i inventory ansible-deploy.yml --private-key=${SSH_KEY_PATH}'
-                    }
+                    
                 }
             }
         }
