@@ -1,5 +1,6 @@
 ---
-- hosts: prod_node
+- hosts: build_node
+  become: yes
   tasks:
     - name: Install Docker
       apt:
@@ -7,9 +8,22 @@
         state: present
         update_cache: yes
 
-    - name: Install Docker Compose
-      get_url:
-        url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-`uname -s`-`uname -m`
-        dest: /usr/local/bin/docker-compose
-        mode: '0755'
-      become: true
+    - name: Pull Docker image from Docker Hub
+      docker_image:
+        name: "aamitv/myapp:latest"
+        source: pull
+
+    - name: Stop and remove existing container if it exists
+      docker_container:
+        name: finalapp
+        state: absent
+      ignore_errors: yes
+
+    - name: Run Docker container
+      docker_container:
+        name: finalapp
+        image: "aamitv/myapp:latest"
+        state: started
+        restart_policy: always
+        ports:
+          - "8080:8080"  

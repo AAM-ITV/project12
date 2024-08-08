@@ -2,34 +2,6 @@
 - hosts: build_node
   become: yes
   tasks:
-    - name: Remove apt lock files
-      file:
-        path: "{{ item }}"
-        state: absent
-      with_items:
-        - /var/lib/apt/lists/lock
-        - /var/cache/apt/archives/lock
-        - /var/lib/dpkg/lock
-        - /var/lib/dpkg/lock-frontend
-
-    - name: Reconfigure dpkg
-      command: dpkg --configure -a
-      ignore_errors: yes
-
-    - name: Clean apt cache
-      command: apt-get clean
-      ignore_errors: yes
-
-    - name: Check if apt-get update fails
-      command: apt-get update
-      register: apt_update
-      ignore_errors: yes
-
-    - name: Print apt-get update output
-      debug:
-        msg: "{{ apt_update.stdout }}"
-      when: apt_update.failed
-
     - name: Install Docker
       apt:
         name: docker.io
@@ -47,4 +19,28 @@
         url: "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-{{ ansible_system }}-{{ ansible_architecture }}"
         dest: /usr/local/bin/docker-compose
         mode: '0755'
-      become: true
+      become: yes
+
+    - name: Clone the repository
+      git:
+        repo: 'https://github.com/AAM-ITV/project12.git'
+        dest: /home/jenkins/project
+
+    - name: Build Docker image
+      community.docker.docker_image:
+        path: /home/jenkins/project
+        name: aamitv/myapp
+        tag: latest
+        buildargs:
+          DOCKER_BUILDKIT: 1
+
+    - name: Login to Docker Hub
+      community.docker.docker_login:
+        username: "aamitv"
+        password: "et/nY$hvb2Z.qHT"
+
+    - name: Push Docker image to Docker Hub
+      community.docker.docker_image:
+        name: aamitv/myapp
+        tag: latest
+        push: yes

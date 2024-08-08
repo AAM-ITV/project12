@@ -73,56 +73,7 @@ ${prodNodeIp} ansible_user=jenkins ansible_ssh_private_key_file=${SSH_KEY_PATH} 
             }
         }
 
-        stage('Create Directories on Build Node') {
-            agent { label 'master' } // Создание директорий на билдовой ноде выполняется на Jenkins Master
-            steps {
-                script {
-                    def buildNodeIp = sh(script: 'terraform output -raw build_node_ip', returnStdout: true).trim()
-                    sh """
-                    ssh -i ${SSH_KEY_PATH} jenkins@${buildNodeIp} 'mkdir -p /home/jenkins/project/app'
-                    """
-                }
-            }
-        }
-
-        stage('Copy Files to Build Node') {
-            agent { label 'master' } // Копирование файлов выполняется на Jenkins Master
-            steps {
-                script {
-                    def buildNodeIp = sh(script: 'terraform output -raw build_node_ip', returnStdout: true).trim()
-                    sh "scp -i ${SSH_KEY_PATH} -r ${WORKSPACE}/* jenkins@${buildNodeIp}:/home/jenkins/project"
-                }
-            }
-        }
-
-        stage('Build Docker Image on Build Node') {
-            steps {
-                script {
-                    def buildNodeIp = sh(script: 'terraform output -raw build_node_ip', returnStdout: true).trim()
-                    sh "ssh -i ${SSH_KEY_PATH} jenkins@${buildNodeIp} 'cd /home/jenkins/project && docker-compose build'"
-                }
-            }
-        }
-
-        stage('Login to Docker Hub') {
-            steps {
-                script {
-                    def buildNodeIp = sh(script: 'terraform output -raw build_node_ip', returnStdout: true).trim()
-                    withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh "ssh -i ${SSH_KEY_PATH} jenkins@${buildNodeIp} 'echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin'"
-                    }
-                }
-            }
-        }
-
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    def buildNodeIp = sh(script: 'terraform output -raw build_node_ip', returnStdout: true).trim()
-                    sh "ssh -i ${SSH_KEY_PATH} jenkins@${buildNodeIp} 'docker tag myapp ${DOCKER_IMAGE} && docker push ${DOCKER_IMAGE}'"
-                }
-            }
-        }
+        
 
         stage('Setup Prod Node') {
             agent { label 'master' } // Настройка продовой ноды выполняется на Jenkins Master
@@ -137,19 +88,6 @@ ${prodNodeIp} ansible_user=jenkins ansible_ssh_private_key_file=${SSH_KEY_PATH} 
             }
         }
 
-        stage('Deploy to Prod Node') {
-            agent { label 'master' } // Развертывание на продовой ноде выполняется на Jenkins Master
-            tools {
-                ansible "${env.ANSIBLE_VERSION}"
-             }
-            steps {
-                script {
-                        sh 'ansible-playbook -i inventory ansible-deploy.yml --private-key=${SSH_KEY_PATH}'
-                    
-                }
-            }
-        }
-    }
 
     post {
         always {
