@@ -27,7 +27,7 @@
 
     - name: Build Docker image
       shell: |
-         docker build -t aamitv/myapp:latest /home/jenkins/project
+         docker-compose up -d  aamitv/myapp:latest /home/jenkins/project
 
     - name: Login to Docker Hub
       shell: |
