@@ -1,5 +1,5 @@
 ---
-- hosts: build_node
+- hosts: prod_node
   become: yes
   tasks:
     - name: Install Docker
@@ -9,21 +9,14 @@
         update_cache: yes
 
     - name: Pull Docker image from Docker Hub
-      docker_image:
-        name: "aamitv/myapp:latest"
-        source: pull
+      shell: docker pull aamitv/myapp:latest
 
     - name: Stop and remove existing container if it exists
-      docker_container:
-        name: finalapp
-        state: absent
+      shell: |
+        docker stop finalapp || true
+        docker rm finalapp || true
       ignore_errors: yes
 
     - name: Run Docker container
-      docker_container:
-        name: finalapp
-        image: "aamitv/myapp:latest"
-        state: started
-        restart_policy: always
-        ports:
-          - "8080:8080"  
+      shell: |
+        docker run -d --name finalapp -p 8080:8080 --restart=always aamitv/myapp:latest
