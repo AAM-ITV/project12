@@ -27,7 +27,7 @@
 
     - name: Build Docker image
       shell: |
-         docker-compose up -d  aamitv/myapp:latest /home/jenkins/project
+         docker-compose up -d
 
     - name: Login to Docker Hub
       shell: |
@@ -36,4 +36,4 @@
 
     - name: Push Docker image to Docker Hub
       shell: |
-        docker push aamitv/myapp:latest
+        docker push aamitv/app:latest
