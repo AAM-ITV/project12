@@ -94,4 +94,5 @@ ${prodNodeIp} ansible_user=jenkins ansible_ssh_private_key_file=${SSH_KEY_PATH} 
             cleanWs() // Очистка рабочего пространства после выполнения пайплайна
         }
     }
+ }
 }
