@@ -1,27 +1,28 @@
+# Используем Tomcat образ
 FROM tomcat:9-jdk11-openjdk-slim
 
+# Устанавливаем необходимые пакеты
 RUN apt-get update && apt-get install -y git maven
 
 # Клонируем репозиторий
-RUN git clone https://github.com/AAM-ITV/project12.git /usr/local/tomcat/webapps/hello
+RUN git clone https://github.com/shephertz/App42PaaS-Java-MySQL-Sample.git /usr/local/tomcat/webapps/hello
 
-# Проверяем содержимое /usr/local/tomcat/webapps/hello
-RUN ls -la /usr/local/tomcat/webapps/hello
-
-# Устанавливаем рабочую директорию
+# Переходим в директорию проекта
 WORKDIR /usr/local/tomcat/webapps/hello
 
-# Собираем проект Maven
-RUN mvn package
+# Собираем проект с помощью Maven
+RUN mvn clean package
 
-# Проверяем содержимое target после сборки
-RUN ls -la target
+# Копируем WAR файл в директорию Tomcat
+RUN cp target/App42PaaS-Java-MySQL-Sample-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
+#RUN mkdir -p /usr/local/tomcat/webapps/ROOT && \
+   # cp WebContent/Config.properties /usr/local/tomcat/webapps/ROOT/Config.properties
 
-# Перемещаем .war файл в директорию веб-приложений Tomcat
-RUN mv target/*.war /usr/local/tomcat/webapps/hello.war
+# Добавляем конфигурационный файл для JMX Exporter
+COPY jmx_exporter_config.yml /usr/local/tomcat/webapps/jmx_exporter_config.yml
 
-# Проверяем содержимое /usr/local/tomcat/webapps после перемещения
-RUN ls -la /usr/local/tomcat/webapps
+# Загружаем JMX Exporter
+ADD https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.16.1/jmx_prometheus_javaagent-0.16.1.jar /usr/local/tomcat/webapps/jmx_prometheus_javaagent.jar
 
-# Открываем порт 8080
-EXPOSE 8080
+# Настраиваем Tomcat для использования JMX Exporter и запускаем Tomcat
+CMD ["catalina.sh", "run"]
