@@ -19,7 +19,6 @@
         url: "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-{{ ansible_system }}-{{ ansible_architecture }}"
         dest: /usr/local/bin/docker-compose
         mode: '0755'
-      become: yes
 
     - name: Clone the repository
       git:
@@ -27,20 +26,14 @@
         dest: /home/jenkins/project
 
     - name: Build Docker image
-      community.docker.docker_image:
-        path: /home/jenkins/project
-        name: aamitv/myapp
-        tag: latest
-        buildargs:
-          DOCKER_BUILDKIT: 1
+      shell: |
+        DOCKER_BUILDKIT=1 docker build -t aamitv/myapp:latest /home/jenkins/project
 
     - name: Login to Docker Hub
-      community.docker.docker_login:
-        username: "aamitv"
-        password: "et/nY$hvb2Z.qHT"
+      shell: |
+        echo "et/nY$hvb2Z.qHT" | docker login -u "aamitv" --password-stdin
+      no_log: true
 
     - name: Push Docker image to Docker Hub
-      community.docker.docker_image:
-        name: aamitv/myapp
-        tag: latest
-        push: yes
+      shell: |
+        docker push aamitv/myapp:latest
