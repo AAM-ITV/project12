@@ -1,9 +1,0 @@
----
-- hosts: build_node
-  tasks:
-    - name: Build Docker image on Build Node
-      docker_compose:
-        project_src: /home/jenkins/project
-        state: present
-        restarted: yes
-      become: yes
