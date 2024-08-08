@@ -7,7 +7,8 @@
         source: pull
 
     - name: Run Docker container
-      docker_compose:
-        project_src: /path/to/deploy/dir
-        state: present
-        restarted: true
+      docker_container:
+        name: finalapp
+        image: "{{ docker_image }}"
+        state: started
+        restart_policy: always
