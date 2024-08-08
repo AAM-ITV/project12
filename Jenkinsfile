@@ -16,13 +16,6 @@ pipeline {
                 git 'https://github.com/AAM-ITV/project12.git'
             }
         }
-        stage('Install Ansible Collections') {
-            steps {
-                sh '''
-                ansible-galaxy collection install community.docker
-                '''
-            }
-        }
         stage('Check Terraform Version') {
             agent { label 'master' }
             tools {
